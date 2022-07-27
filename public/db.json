@@ -1,24 +1,44 @@
 {
-  "contacts": [{
+  "contacts": [
+    {
       "id": 1,
       "firstName": "Michael",
       "lastName": "Tabor",
       "phoneNumber": "3038804204",
       "email": "michael.tabor@email.com",
       "address": "123 South St"
-  }, {
+    },
+    {
       "id": 2,
       "firstName": "Steve",
       "lastName": "Abram",
       "phoneNumber": "3038803976",
       "email": "steve.abram@email.com",
       "address": "123 North St"
-  }, {
+    },
+    {
       "id": 3,
       "firstName": "Robert",
       "lastName": "Bays",
       "phoneNumber": "3035791234",
       "email": "robert.bays@email.com",
       "address": "123 East St"
-  }]
+    },
+    {
+      "id": 4,
+      "firstName": "Jeff",
+      "lastName": "Billow",
+      "phoneNumber": "3035795678",
+      "email": "Jeff.Billow@email.com",
+      "address": "123 West St"
+    },
+    {
+      "id": 5,
+      "firstName": "Michael",
+      "lastName": "Tabor",
+      "address": "2905 Inca St",
+      "phoneNumber": "3038804205",
+      "email": "mjtabor23@gmail.com"
+    }
+  ]
 }

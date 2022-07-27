@@ -1,13 +1,14 @@
 import React from 'react';
 import { Box, CssBaseline, ThemeProvider } from '@mui/material';
 import { createTheme } from '@mui/material/styles';
-import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import { Route, Routes } from 'react-router-dom';
 import { routes } from './routes';
 import NavBar from './components/NavBar';
+import { AddressBookContextProvider } from './context/AddressBookContext';
 
 function App() {
 
-  // them provider for MUI
+  // color them provider for MUI
   const theme = createTheme({
     palette: {
       primary: {
@@ -25,29 +26,31 @@ function App() {
     },
   });
   return (
-    <ThemeProvider theme={theme}>
-      <Box
-        display="flex"
-        justifyContent="center"
-        alignItems="center"
-        minHeight="100vh"
-        sx={{backgroundColor: 'primary.main'}}
-      >
-        <CssBaseline />
-        <BrowserRouter>
-          <NavBar />
-          <Routes>
-            {routes.map((route) => (
-              <Route
-                key={route.key}
-                path={route.path}
-                element={<route.component />}
-              />
-            ))}
-          </Routes>
-        </BrowserRouter>
-      </Box>
-    </ThemeProvider>
+    <AddressBookContextProvider>
+      <ThemeProvider theme={theme}>
+        <Box
+          display="flex"
+          justifyContent="center"
+          alignItems="center"
+          minHeight="100vh"
+          sx={{backgroundColor: 'primary.main'}}
+        >
+          <CssBaseline />
+              <NavBar />
+              <Routes>
+                {routes.map((route) => (
+                  <Route
+                  key={route.key}
+                  path={route.path}
+                  element={<route.component />}
+                  />
+                ))}
+
+
+              </Routes>
+        </Box>
+      </ThemeProvider>
+    </AddressBookContextProvider>
   );
 }
 

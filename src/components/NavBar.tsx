@@ -1,17 +1,12 @@
-import * as React from 'react';
+import React, {useContext} from 'react';
 import { styled, alpha } from '@mui/material/styles';
-import AppBar from '@mui/material/AppBar';
-import Box from '@mui/material/Box';
-import Toolbar from '@mui/material/Toolbar';
-import IconButton from '@mui/material/IconButton';
-import Typography from '@mui/material/Typography';
-import InputBase from '@mui/material/InputBase';
-import MenuIcon from '@mui/icons-material/Menu';
 import SearchIcon from '@mui/icons-material/Search';
 import { routes } from '../routes';
-import { Button } from '@mui/material';
+import { IconButton, InputAdornment, TextField, Typography, AppBar, Toolbar } from '@mui/material';
+import { AddressBookContext } from '../context/AddressBookContext';
+import { Link } from 'react-router-dom';
 
-const Search = styled('div')(({ theme }) => ({
+const Search = styled(TextField)(({ theme }) => ({
   position: 'relative',
   borderRadius: theme.shape.borderRadius,
   backgroundColor: alpha(theme.palette.common.white, 0.25),
@@ -35,52 +30,57 @@ const SearchIconWrapper = styled('div')(({ theme }) => ({
   alignItems: 'center',
   justifyContent: 'center',
 }));
-
-const StyledInputBase = styled(InputBase)(({ theme }) => ({
-  color: 'secondary.light',
-  '& .MuiInputBase-input': {
-    padding: theme.spacing(1, 1, 1, 0),
-    paddingLeft: `calc(1em + ${theme.spacing(4)})`,
-    transition: theme.transitions.create('width'),
-    width: '100%',
-    [theme.breakpoints.up('sm')]: {
-      width: '12ch',
-      '&:focus': {
-        width: '20ch',
-      },
-    },
+const NavbarLink = styled(Link)(({ theme }) => ({
+  color: 'primary.dark',
+  margin: '10px',
+  backgroundColor: alpha(theme.palette.common.white, 0.25),
+  '&:hover': {
+    backgroundColor: alpha(theme.palette.common.white, 0.35),
   },
+  textDecoration: 'none'
 }));
 
-export default function NavBar() {
+const NavBar: React.FC = () => {
+  const {searchContacts } = useContext(AddressBookContext);
+
+  const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    searchContacts(event.target.value);
+  };
+  
   return (
-    <Box>
-      <AppBar sx={{ backgroundColor: 'primary.light' }}>
-        <Toolbar>
-          <Typography
-            variant="h6"
-            noWrap
-            component="div"
-            sx={{ flexGrow: 1, display: { xs: 'none', sm: 'block' } }}
-          >
-            ADDRESS BOOK
-          </Typography>
-          {routes.map((route) => (
-            <Button href={route.path} key={route.key} sx={{ color: 'primary.dark' }}>
-              {route.title}
-            </Button>
-          ))}
-          <Search>
-            <SearchIconWrapper>
-              <SearchIcon />
-            </SearchIconWrapper>
-            <StyledInputBase
-              placeholder="Search…"
-              inputProps={{ 'aria-label': 'search' }}
-            />
-          </Search>
-        </Toolbar>
-      </AppBar>
-    </Box>
+    <AppBar sx={{ backgroundColor: 'primary.light' }}>
+      <Toolbar>
+        <Typography
+          variant="h6"
+          noWrap
+          component="div"
+          sx={{ flexGrow: 1, display: { xs: 'none', sm: 'block' } }}
+        >
+          ADDRESS BOOK
+        </Typography>
+        {routes.map((route) => (
+          <NavbarLink to={route.path}>
+            {route.title}
+          </NavbarLink>
+        ))}
+        <Search
+          label="Search..."
+          onChange={onChange}
+          InputProps={{
+            endAdornment: (
+              <InputAdornment position={'start'}>
+                <IconButton>
+                  <SearchIconWrapper>
+                    <SearchIcon />
+                  </SearchIconWrapper>
+                </IconButton>
+              </InputAdornment>
+            )
+          }}
+        />
+      </Toolbar>
+    </AppBar>
   );
 }
+
+export default NavBar;

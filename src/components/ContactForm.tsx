@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { Box, Button, Grid, Input, TextField } from "@mui/material";
-import { Contact } from '../api/contactsService';
+import { Box, Button, TextField } from "@mui/material";
+import { Contact, insertContact } from '../api/contactsService';
 
 const defaultValues: Contact = {
   id: 0,
@@ -11,26 +11,25 @@ const defaultValues: Contact = {
   email: ''
 };
 
+interface RequiredFormFieldErrors {
+  email: boolean;
+  phoneNumber: boolean;
+}
 
 const ContactForm: React.FC = () => {
-  const [formValues, setFormValues] = useState(defaultValues)
+  const [formValues, setFormValues] = useState(defaultValues);
+  const [errors, setErrors] = useState<RequiredFormFieldErrors>({email: false, phoneNumber: false});
 
-  // const retrieveContacts = useCallback(async () => {
-  //   return await getContacts();
-  // }, [])
+  const validateOnSubmit = (): boolean => {
+    let temp: RequiredFormFieldErrors = {email: false, phoneNumber: false};
+    temp.email = /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(formValues.email) ? false : true;
+    temp.phoneNumber = formValues.phoneNumber.length > 9 ? false : true;
+    setErrors({
+      ...temp
+    });
+    return Object.values(temp).every((x) => x === false);
+  }
 
-  // useEffect(() => {
-  //   const asyncGetContacts = async () => {
-  //     try {
-  //       const data = await getContacts();
-  //       setContacts(data);
-  //     } catch (e) {
-  //       // some sort of error handling here
-  //       console.log(e);
-  //     }
-  //   }
-  //   asyncGetContacts();
-  // }, [])
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormValues({
@@ -39,18 +38,18 @@ const ContactForm: React.FC = () => {
     });
   };
 
-  const handleSubmit = () => {
-    console.log(formValues);
-    // if (validateOnSubmit()) {
-    //   window.alert("Submitting...");
-    // }
-    // employeeService.insertEmployee(values);
-    // resetForm();
+  const handleSubmit = async () => {
+    if (!validateOnSubmit()) {
+      console.error(`An error occurred in one of the Required Form Fields`)
+    } else {
+      await insertContact(formValues);
+    }
+    resetForm();
   };
 
   const resetForm = () => {
     setFormValues(defaultValues);
-    // setErrors({});
+    setErrors({email: false, phoneNumber: false});
   };
   
   return (
@@ -76,7 +75,8 @@ const ContactForm: React.FC = () => {
       <TextField
         id="email-input"
         name="email"
-        label="Email"
+        error={errors.email}
+        label="Email*"
         type="text"
         value={formValues.email}
         onChange={handleInputChange}
@@ -85,7 +85,8 @@ const ContactForm: React.FC = () => {
       <TextField
         id="phone-number-input"
         name="phoneNumber"
-        label="Phone Number"
+        error={errors.phoneNumber}
+        label="Phone Number*"
         type="text"
         value={formValues.phoneNumber}
         onChange={handleInputChange}
@@ -111,9 +112,9 @@ const ContactForm: React.FC = () => {
           type="submit" 
           sx={{margin: '5px', backgroundColor: 'primary.main', color: '#fff'}}
           onClick={handleSubmit}
-          >
-            Submit
-          </Button>
+        >
+          Submit
+        </Button>
         <Button 
           sx={{margin: '5px', backgroundColor: 'primary.main', color: '#fff'}} 
           onClick={resetForm}
@@ -122,32 +123,6 @@ const ContactForm: React.FC = () => {
         </Button>
       </Box>
     </>
-    // <Box sx={{
-    //   backgroundColor: "secondary.main",
-    //   display: 'flex',
-    //   justifyContent: 'center',
-    //   alightItems: 'center',
-    //   border: 1,
-    //   borderRadius: '10px',
-    //   padding: '10px'
-    // }}>
-    //   <TextField
-    //     id="first-name-input"
-    //     name="firstName"
-    //     label="First Name"
-    //     type="text"
-    //     value={formValues.firstName}
-    //     onChange={handleInputChange}
-    //   />
-    //   <TextField
-    //     id="last-name-input"
-    //     name="lastName"
-    //     label="Last Name"
-    //     type="text"
-    //     value={formValues.lastName}
-    //     onChange={handleInputChange}
-    //   />
-    // </Box>
   )
 }
 
